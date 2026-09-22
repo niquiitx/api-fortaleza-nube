@@ -1,0 +1,43 @@
+services:
+  # Servicio 1: Tu API Flask
+  api:
+    image: niquiitx/mi-api-flask:latest
+    container_name: api-flask
+    restart: always
+    ports:
+      - "5050:5050"
+    networks:
+      - red-interna
+
+  # Servicio 2: Uptime Kuma (Monitoreo de estado de la API)
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime-kuma-data:/app/data
+    networks:
+      - red-interna
+
+  # Servicio 3: Dozzle (Visualizador de Logs en tiempo real)
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle-logs
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - red-interna
+
+# Definición de la Red Interna (Tipo Bridge)
+networks:
+  red-interna:
+    driver: bridge
+
+# Definición de volúmenes persistentes
+volumes:
+  uptime-kuma-data:
